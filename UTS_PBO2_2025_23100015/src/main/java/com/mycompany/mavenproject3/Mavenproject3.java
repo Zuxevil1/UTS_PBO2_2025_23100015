@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Mavenproject3 extends JFrame implements Runnable {
-    private String text = "Menu yang tersedia: Americano | Pandan Latte | Aren Latte | Matcha Frappucino | Jus Apel";
+    private String text;
     private int x;
     private int width;
     private BannerPanel bannerPanel;
@@ -36,20 +36,15 @@ public class Mavenproject3 extends JFrame implements Runnable {
 
         Thread thread = new Thread(this);
         thread.start();
-    } 
+    }
 
     class BannerPanel extends JPanel {
         @Override
-        protected void paintComponent(Graphics label) {
-            super.paintComponent(label);
-            label.setColor(Color.RED);
-            label.setFont(new Font("Arial", Font.BOLD, 18));
-            label.drawString(text, x, getHeight() / 2);
-
-            setVisible(true);
-
-            Thread t = new Thread();
-            t.start();
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.setColor(Color.RED);
+            g.setFont(new Font("Arial", Font.BOLD, 18));
+            g.drawString(text, x, getHeight() / 2);
         }
     }
 
