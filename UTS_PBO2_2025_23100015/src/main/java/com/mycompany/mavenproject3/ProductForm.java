@@ -9,7 +9,6 @@ package com.mycompany.mavenproject3;
  * @author ASUS
  */
 import java.awt.BorderLayout;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -34,14 +33,27 @@ public class ProductForm extends JFrame {
     private JButton saveButton;
     private JButton editButton;
     private JButton deleteButton;
+    private Mavenproject3 mainApp;
+    private List<Product> products;
 
-    public ProductForm() {
-        List<Product> products = new ArrayList<>();
-        products.add(new Product(1, "P001", "Americano", "Coffee", 18000, 10));
-        products.add(new Product(2, "P002", "Pandan Latte", "Coffee", 15000, 8));
-        
+
+private String getAllProductNames() {
+    StringBuilder sb = new StringBuilder("Menu yang tersedia: ");
+    for (int i = 0; i < tableModel.getRowCount(); i++) {
+        sb.append(tableModel.getValueAt(i, 1)); // Nama Produk
+        if (i < tableModel.getRowCount() - 1) {
+            sb.append(" | ");
+        }
+    }
+    return sb.toString();
+}
+    
+    public ProductForm(Mavenproject3 mainApp) {
+        this.mainApp = mainApp;
+        this.products = mainApp.getProductList(); 
+
         setTitle("WK. Cuan | Stok Barang");
-        setSize(1100, 450);
+        setSize(1000, 450);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         
@@ -103,6 +115,9 @@ public class ProductForm extends JFrame {
 
                 tableModel.addRow(new Object[]{code, name, category, price, stock});
 
+                mainApp.setBannerText(getAllProductNames());
+                products.add(new Product(0, code, name, category, price, stock));
+
                 codeField.setText("");
                 nameField.setText("");
                 priceField.setText("");
@@ -126,7 +141,7 @@ public class ProductForm extends JFrame {
                 try {
                     double price = Double.parseDouble(priceText);
                     int stock = Integer.parseInt(stockText);
-        
+                    
                     tableModel.setValueAt(code, selectedRow, 0);
                     tableModel.setValueAt(name, selectedRow, 1);
                     tableModel.setValueAt(category, selectedRow, 2);
@@ -138,6 +153,9 @@ public class ProductForm extends JFrame {
                     categoryField.setSelectedIndex(0);
                     priceField.setText("");
                     stockField.setText("");
+
+                    mainApp.setBannerText(getAllProductNames());
+
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(this, "Harga dan stok harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -151,11 +169,14 @@ public class ProductForm extends JFrame {
             if (selectedRow != -1) {
                 products.remove(selectedRow);
                 tableModel.removeRow(selectedRow);
+
                 codeField.setText("");
                 nameField.setText("");
                 categoryField.setSelectedIndex(0);
                 priceField.setText("");
                 stockField.setText("");
+
+                mainApp.setBannerText(getAllProductNames());
             } else {
                 JOptionPane.showMessageDialog(formPanel, "tidak ada yang dipilih");
             }
